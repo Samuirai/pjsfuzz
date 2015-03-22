@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import random
 import re
 
@@ -11,6 +13,15 @@ class ansi:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+motd = ansi.RED+ansi.BOLD+"""
+      __    __
+     /  `--´  \\
+    |  |  __|  | 
+    |  | |____/   """+ansi.END+ansi.BOLD+"""pjsFuzz - Fuzzing in Pajamas"""+ansi.RED+"""
+    |__|     |    
+      |______|
+      """+ansi.END
+
 class pjsfuzz:
     def __init__(self, name="missigno", debug=False):
         """pjsFuzz main class. Create an instance with a name, set different attributes.
@@ -19,6 +30,19 @@ class pjsfuzz:
         if debug:
             self.log("!", "DEBUG mode active")
         
+        self.name = name
+        self.description = ""
+        self.instance_id = hex(random.randint(0x000000,0xffffff))[2:]
+        self.generation_number = 1
+
+        self.init_template()
+
+        self.log("-", "pjsFuzz initiated name: %s id: %s" % (self.name, self.instance_id))
+        self.log("",motd)
+
+    def init_template(self):
+        """init the template related values. If multiple htmls are created, 
+        this should be called to reset each round"""
         attributes = {}
         attributes['header'] = "<!-- you should set jsfuzz.attributes['header'] -->"
         attributes['body'] = "<!-- you should set jsfuzz.attributes['body'] -->" 
@@ -34,10 +58,6 @@ class pjsfuzz:
         self.template['attributes'] = attributes
         self.template['base'] = open("templates/basic.html").read()
 
-        self.name = name
-        self.instance_id = hex(random.randint(0x000000,0xffffff))[2:]
-        self.generation_number = 1
-        self.log("-", "pjsFuzz initiated name: %s id: %s" % (self.name, self.instance_id))
 
     def log(self, severity, msg):
         """logging functionallity. Use different severity strings (! * - : > ?) 
@@ -68,6 +88,8 @@ class pjsfuzz:
                 self.log("?", "'%s' is defined, but is not in the html template" % (key))
             html = html.replace("{{%s}}" % key, val)
         html = html.replace("{{debug_injection}}", self.debug_injection)
+        html = html.replace("{{name}}", self.name)
+        html = html.replace("{{description}}", self.description)
         unused_template_strings = re.search(r"{{([a-zA-Z0-9_]+)}}", html)
         if unused_template_strings:
             for name in unused_template_strings.groups():
