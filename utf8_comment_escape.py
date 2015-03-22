@@ -28,10 +28,10 @@ pjs.done()
 
 """
 result:
-> testcase 0: <!--\u2028console.log('executed')
-> testcase 0: 
-> testcase 1: //\u2028console.log('executed')
-> testcase 1: 
-> testcase 2: -->\u2028console.log('executed')
-> testcase 2: 
+> testcase 0: 0x2028 | <!--\u2028console.log('executed')
+> testcase 0: 0x2029
+> testcase 1: 0x2028 | //\u2028console.log('executed')
+> testcase 1: 0x2029
+> testcase 2: 0x2028 | -->\u2028console.log('executed')
+> testcase 2: 0x2029 
 """
