@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        iframe {
+            border: 1px solid #333; 
+            margin: 0; 
+            padding: 0; 
+            width:200px; 
+            height: 30px;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+
+        var iframes = {{iframes}};
+        var iframenr=0;
+
+        newlog = function(msg) {
+            log_entry = document.createElement('div');
+            log_entry.appendChild(document.createTextNode(msg));
+            document.getElementById('log').appendChild(log_entry);
+        }
+        console.log=function(input){newlog(input)};
+        window.console=console;
+
+        receiveMessage = function(event) {
+            if(event.data==="done") {
+                if(iframenr < iframes.length-1) {
+                    iframenr+=1;
+                    var load_iframe = iframenr;
+                    setTimeout(function() {
+                        event.source.location=iframes[load_iframe];
+                    },500);
+                } else {
+                    event.source.location="done";
+                }
+            } else {
+                console.log("> "+event.data);
+            }
+            
+        }
+        window.addEventListener("message", receiveMessage, false);
+        
+    </script>
+</head>
+<body>
+    <div id="log"></div>
+
+    <script>
+        max = 32;
+        if(iframes.length<max)
+            max = iframes.length
+
+        setTimeout(function() {
+            console.log("load iframes");
+            for(var i=0; i<max; ++i) {
+                iframe = document.createElement("iframe");
+                iframe.src=iframes[i];
+                document.body.appendChild(iframe);
+                iframenr=i;
+            }
+        },500);
+        console.log("pjsFuzz initiated!");
+    </script>
+</body>
+</html>

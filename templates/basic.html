@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+        {{debug_injection}}
+        {{header}}
+        <script>
+            {{script}}
+        </script>
+    </head>
+    <body>
+        <script>document.bgColor="#dd0000";</script>
+        {{body}}
+        <script>document.bgColor="#00dd00";console.log("done");</script>
+    </body>
+</html>

@@ -1,0 +1,6 @@
+*.pyc
+.Python
+bin
+include
+lib
+fuzz_files/*
